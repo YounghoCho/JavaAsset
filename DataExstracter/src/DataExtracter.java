@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,12 +18,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.sun.org.apache.xerces.internal.dom.ChildNode;
+import com.sun.org.apache.xpath.internal.axes.ChildIterator;
+
 /*[1]
  * 1.static 변수,메서드가 쓰이는 이유 : 프로그램 실행시  static main이 먼저 실행되는데 static이 아닌 변수는 메모리에서 찾을 수 없으니까
+ * 2.ArrayList에 파싱한 객체를 담는다.
  */
 public class DataExtracter {
 	private static String uri = "http://10.10.80.134:8393/api/v10/search/preview?collection=Social_Listening_SNS&query=*:*&output=application/xml&uri=csv%3A%2F%2F%252Fhome%252Fesadmin%252Fdata%252Ftwitter%252Fsns_twitter_all_2017.csv%3Fseq%3Dwasher_2017-1-10_2";
@@ -29,7 +36,11 @@ public class DataExtracter {
 	public static void main(String[] args) throws ClientProtocolException, IOException, XPathExpressionException, ParserConfigurationException {
 		HttpClient client = HttpClients.createDefault();
 		String result = sendRequest(client, uri);
-		parseData(result);
+		List<AnalyzedDoc> DocList = new ArrayList<AnalyzedDoc>();
+		
+		parseData(result, DocList);
+//		System.out.println("size = " + DocList.size());
+//		System.out.println("values = " + DocList.get(0).getValue());
 	}
 
 	/*
@@ -37,7 +48,7 @@ public class DataExtracter {
 	 * 1.XML 객체 생성 (InpuSource, Document)
 	 * 2.XPath 생성(XML파싱)
 	 */
-	private static void parseData(String result) throws IOException, ParserConfigurationException, XPathExpressionException {
+	private static void parseData(String result, List<AnalyzedDoc> DocList) throws IOException, ParserConfigurationException, XPathExpressionException {
 		result = result.replace("es:", "es");
 		InputSource is = new InputSource(new StringReader(result));
 		try {
@@ -45,9 +56,21 @@ public class DataExtracter {
 			
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			NodeList nodeList = (NodeList) xPath.evaluate("//esfacet", doc, XPathConstants.NODESET);
-			for(int idx = 0; idx < nodeList.getLength(); idx++) {
+			for(int idx = 0; idx < nodeList.getLength(); idx++) {	//31
+				AnalyzedDoc analyzedDoc = new AnalyzedDoc();
+				analyzedDoc.setId(nodeList.item(idx).getAttributes().getNamedItem("id").getTextContent());
+//				System.out.println(nodeList.item(idx).getAttributes().getNamedItem("id").getTextContent());
+				analyzedDoc.setName(nodeList.item(idx).getAttributes().getNamedItem("label").getTextContent());
+				//자식노드 value 추가
+//				NodeList childDodeList = (NodeList) xPath.evaluate("//esfacet/esfacetValue", doc, XPathConstants.NODESET);
+//				for(int cidx = 0; cidx < childDodeList.getLength(); cidx++) {
+//					analyzedDoc.setValue(childDodeList.item(cidx).getAttributes().getNamedItem("label").getTextContent());					
+//				}
 				System.out.println(nodeList.item(idx).getAttributes().getNamedItem("id").getTextContent());
+				DocList.add(analyzedDoc);
 			}
+			//해야할일 1: 자식 노드들은 어떻게 객체로 해서 합칠건지? doc.java, part.java 파악. 위의 방법은 틀렸음.. 안쪽 for문은 마지막것만 DocList에 추가됨.
+			//내생각 : 담는거는 part에다가 자식 value넣고, doc.java에서 String대신 part객체형태로 담으면 될듯.
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}

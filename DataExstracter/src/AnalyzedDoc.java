@@ -2,9 +2,8 @@
 public class AnalyzedDoc {
 	private String id;
 	private String name;
-	private String value;
+	
 	public String getId() {
-		System.out.println(id);
 		return id;
 	}
 	public void setId(String id) {
@@ -15,12 +14,6 @@ public class AnalyzedDoc {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
 	}
 	
 }
