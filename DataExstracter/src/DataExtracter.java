@@ -23,9 +23,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.dom.ChildNode;
-import com.sun.org.apache.xpath.internal.axes.ChildIterator;
-
 /*[1]
  * 1.static 변수,메서드가 쓰이는 이유 : 프로그램 실행시  static main이 먼저 실행되는데 static이 아닌 변수는 메모리에서 찾을 수 없으니까
  * 2.ArrayList에 파싱한 객체를 담는다.
@@ -39,14 +36,17 @@ public class DataExtracter {
 		List<AnalyzedDoc> DocList = new ArrayList<AnalyzedDoc>();
 		
 		parseData(result, DocList);
-//		System.out.println("size = " + DocList.size());
-//		System.out.println("values = " + DocList.get(0).getValue());
+		//for(int i=0; i<DocList.size(); i++) System.out.println(DocList.get(i).getList().toString());			
+		writeCsv(DocList);
 	}
-
+	private static void writeCsv(List<AnalyzedDoc> DocList) {
+		
+	}
 	/*
 	 * [3]
 	 * 1.XML 객체 생성 (InpuSource, Document)
 	 * 2.XPath 생성(XML파싱)
+	 * 3.ArrayList에 ChildNode의 값들을 담아서 추출했다.
 	 */
 	private static void parseData(String result, List<AnalyzedDoc> DocList) throws IOException, ParserConfigurationException, XPathExpressionException {
 		result = result.replace("es:", "es");
@@ -59,18 +59,21 @@ public class DataExtracter {
 			for(int idx = 0; idx < nodeList.getLength(); idx++) {	//31
 				AnalyzedDoc analyzedDoc = new AnalyzedDoc();
 				analyzedDoc.setId(nodeList.item(idx).getAttributes().getNamedItem("id").getTextContent());
-//				System.out.println(nodeList.item(idx).getAttributes().getNamedItem("id").getTextContent());
 				analyzedDoc.setName(nodeList.item(idx).getAttributes().getNamedItem("label").getTextContent());
 				//자식노드 value 추가
-//				NodeList childDodeList = (NodeList) xPath.evaluate("//esfacet/esfacetValue", doc, XPathConstants.NODESET);
-//				for(int cidx = 0; cidx < childDodeList.getLength(); cidx++) {
-//					analyzedDoc.setValue(childDodeList.item(cidx).getAttributes().getNamedItem("label").getTextContent());					
-//				}
-				System.out.println(nodeList.item(idx).getAttributes().getNamedItem("id").getTextContent());
+				Node parantNode = nodeList.item(idx);
+				List<String> childDocList = new ArrayList<String>();
+				NodeList childNodeList = parantNode.getChildNodes();
+				ArrayList<String> tempList = new ArrayList<>();
+				for(int cidx = 0; cidx < childNodeList.getLength(); cidx++) {
+					if(childNodeList.item(cidx).getNodeName().equals("#text")) //개행구간이 #test라고 들어오기때문에 제외시킨다.
+						continue;
+					else 
+						tempList.add(childNodeList.item(cidx).getAttributes().getNamedItem("label").getTextContent());
+				}
+				analyzedDoc.setList(tempList);
 				DocList.add(analyzedDoc);
 			}
-			//해야할일 1: 자식 노드들은 어떻게 객체로 해서 합칠건지? doc.java, part.java 파악. 위의 방법은 틀렸음.. 안쪽 for문은 마지막것만 DocList에 추가됨.
-			//내생각 : 담는거는 part에다가 자식 value넣고, doc.java에서 String대신 part객체형태로 담으면 될듯.
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}

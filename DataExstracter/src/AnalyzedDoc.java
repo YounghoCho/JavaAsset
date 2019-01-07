@@ -1,8 +1,17 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class AnalyzedDoc {
 	private String id;
 	private String name;
-	
+	private ArrayList<String> list = new ArrayList<>();
+			
+	public ArrayList<String> getList() {
+		return list;
+	}
+	public void setList(ArrayList<String> list) {
+		this.list = list;
+	}
 	public String getId() {
 		return id;
 	}
