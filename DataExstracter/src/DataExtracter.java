@@ -1,10 +1,12 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -36,11 +38,32 @@ public class DataExtracter {
 		List<AnalyzedDoc> DocList = new ArrayList<AnalyzedDoc>();
 		
 		parseData(result, DocList);
-		//for(int i=0; i<DocList.size(); i++) System.out.println(DocList.get(i).getList().toString());			
+		//for(int i=0; i<DocList.size(); i++) System.out.println(DocList.get(i).getList().get(0));			
 		writeCsv(DocList);
 	}
-	private static void writeCsv(List<AnalyzedDoc> DocList) {
+	private static void writeCsv(List<AnalyzedDoc> DocList) throws IOException {
+		BufferedWriter fw = new BufferedWriter(new FileWriter("test.csv"));
+		//header
+		fw.write("FacetId");
+		fw.write(",");
+		fw.write("FacetName");
+		fw.write(",");
+		fw.write("FacetValue");
+		fw.newLine();
 		
+		for(int i=0; i<DocList.size(); i++) {
+			for(int j=0; j<DocList.get(i).getList().size(); j++) {
+				fw.write(DocList.get(i).getId());
+				fw.write(",");
+				fw.write(DocList.get(i).getName());
+				fw.write(",");
+				fw.write(DocList.get(i).getList().get(j));
+				fw.newLine();
+			}
+		}
+		fw.flush();
+		fw.close();
+		System.out.println("Finished");
 	}
 	/*
 	 * [3]
@@ -62,7 +85,6 @@ public class DataExtracter {
 				analyzedDoc.setName(nodeList.item(idx).getAttributes().getNamedItem("label").getTextContent());
 				//자식노드 value 추가
 				Node parantNode = nodeList.item(idx);
-				List<String> childDocList = new ArrayList<String>();
 				NodeList childNodeList = parantNode.getChildNodes();
 				ArrayList<String> tempList = new ArrayList<>();
 				for(int cidx = 0; cidx < childNodeList.getLength(); cidx++) {
