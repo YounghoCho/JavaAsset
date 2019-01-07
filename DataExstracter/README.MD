@@ -1,2 +1,2 @@
-Data Exstracter<br>
+<b>Data Extracter Result<br>
 ![facet](./image/facet.png)
