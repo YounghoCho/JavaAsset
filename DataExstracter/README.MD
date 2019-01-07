@@ -1,2 +1,2 @@
 Data Exstracter<br>
-![facet](./DataExstracter/image/favet.png)
+![facet](./image/facet.png)
