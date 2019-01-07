@@ -1,0 +1,40 @@
+FacetId,FacetName,FacetValue
+$.year,Year,2017
+$.month,Month,201701
+$.day,Day,20170110
+$.month_of_year,Month of Year,1
+$.day_of_month,Day of Month,10
+$.day_of_week,Day of Week,3
+$.structured_facet.site_name,Site,Twitter
+$.structured_facet.writer_id,Writer ID,Maresedoats
+$.structured_facet.like_count_range,Like Count,1~10
+$.structured_facet.reply_count_range,Reply Count,0
+$.structured_facet.retweet_count_range,Retweet Count,1~10
+$.structured_facet.tweets_range,Tweets,10001~25000
+$.structured_facet.following_range,Following,51~100
+$.structured_facet.followers_range,Followers,51~100
+$.structured_facet.favorites_range,Favorites,10001~25000
+$.others.writer_name,Writer Name,Marilee
+$.others.like_count,Like Count,5
+$.others.reply_count,Reply Count,0
+$.others.retweet_count,Retweet Count,1
+$.others.profile_link,Profile Link,https://twitter.com/Maresedoats
+$.others.tweets,Tweets,19966
+$.others.following,Following,65
+$.others.followers,Followers,78
+$.others.favorites,Favorites,14635
+$._word.noun.general,General Noun,CNN
+$._word.noun.general,General Noun,cycle
+$._word.noun.general,General Noun,machine
+$._word.noun.general,General Noun,name
+$._word.noun.general,General Noun,spin
+$._word.noun.general,General Noun,washing
+$._word.noun.general,General Noun,whirlpool
+$._word.verb,Verb,change
+$._word.adj,Adjective,much
+$._phrase.noun_phrase.nouns,Noun Sequence,spin cycle
+$._phrase.noun_phrase.nouns,Noun Sequence,washing machine
+$._phrase.noun_phrase.mod_noun,Modified Noun,much ... spin
+$._phrase.noun_phrase.adp_noun,Prep Noun,than ... washing machine
+$._phrase.noun_phrase.adp_noun,Prep Noun,to ... whirlpool
+$.unstructured.product_category.wash.brand,Brand,Whirlpool
