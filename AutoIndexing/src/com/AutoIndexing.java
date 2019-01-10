@@ -33,11 +33,15 @@ public class AutoIndexing {
 
         Channel channel = session.openChannel("exec"); //channel open with session  (ref : https://epaul.github.io/jsch-documentation/javadoc/com/jcraft/jsch/Session.html#openChannel-java.lang.String-)     
         Channel channelIndex = session.openChannel("exec");
+        Channel channelRebuild = session.openChannel("exec");
+        
         ChannelExec channelExec = (ChannelExec) channel; //make channel use command 
         ChannelExec channelExecIndex = (ChannelExec) channelIndex; 
+        ChannelExec channelExecRebuild = (ChannelExec) channelRebuild; 
+
         channelExec.setCommand("/opt/IBM/es/bin/esadmin check"); //esadmin command response null(different with ps/df/top), so need to find location
         channelExecIndex.setCommand("/opt/IBM/es/bin/esadmin controller startIndexBuild -cid " + collections[0]); // From KnowledgeCenter (ref : https://www.ibm.com/support/knowledgecenter/en/SS8NLW_12.0.0/com.ibm.discovery.es.ad.doc/iiysarfcomd.html#iiysarfcomd__dcsnonweb)
-   
+        channelExecRebuild.setCommand("/opt/IBM/es/bin/esadmin " + collections[0] + ".indexservice.node1 startIndexRebuild -type TextFromCache"); // From Masaki sang,
         channelExec.connect();        
         //Check process status 
         BufferedReader br = new BufferedReader(new InputStreamReader(channelExec.getInputStream(), "UTF-8"));
@@ -55,15 +59,13 @@ public class AutoIndexing {
 						channelExecIndex.disconnect();
 						System.out.println("It is started");
 					}
-        		}
-        		
-        		//Start Re-build
-        		
+        		}	
 			}
+            channelExec.disconnect();
 
-    		//적당한 시간 간격을 두고 리빌드를 한다.
-			//인덱스서비스는 완료시점파악 불가 로그도 없어서 임의의 시간을 배열로하여 돌린다.
-			//*리빌드 커맨드가 뭘까?
-         channelExec.disconnect();
+            //Start Re-build
+        	channelExecRebuild.connect();
+        	channelExecRebuild.disconnect();
+        	System.out.println("Rebuild started"); //인덱스서비스는 완료시점파악 불가해서, 콜렉션별로 적당한 시간 간격을 두고 리빌드를 하는게 맞다.
 	}
 }
