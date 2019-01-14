@@ -23,10 +23,9 @@ import org.xml.sax.SAXException;
 public class AutoIndexingWithAPI {
 	static String AdminUri = "http://10.10.80.134:8390/api/v20/admin";
 	static String collection = "test_yhj";
-	//대기시간 넣기(indexer 킨다음. 그리고 리빌드된다음)
 	
 	public static void main(String[] args) throws ClientProtocolException, IOException, XPathExpressionException,
-			SAXException, ParserConfigurationException {
+			SAXException, ParserConfigurationException, InterruptedException {
 		// Get Security Token
 		String tokenUri = AdminUri + "/login/token?token=MWI0ZDVkNWYtZjNiZi00MjM1LWJlZDQtMGJmODUzM2Q1ZTgx";
 		String securityToken = getSecurityToken(tokenUri);
@@ -41,8 +40,12 @@ public class AutoIndexingWithAPI {
 			String startUri = AdminUri + "/collections/indexer/start?collection=" + collection + "&securityToken="
 					+ securityToken;
 			String startResult = startIndexer(startUri);
-			if (startResult.equals("Running"))
-				System.out.println(collection + "의 indexer가 시작되었습니다.");
+			if (startResult.equals("Running")) {
+				System.out.println(collection + "의 indexer가 시작됩니다.");
+				Thread.sleep(20000);
+			}
+		} else {
+			System.out.println("indexer가 이미 실행중입니다.");
 		}
 
 		// Re-build //시간넣기.
@@ -52,6 +55,7 @@ public class AutoIndexingWithAPI {
 	}
 
 	private static void startRebuild(String rebuildUri) throws ClientProtocolException, IOException {
+		System.out.println("rebuild after 20 seconds");
 		getXml(rebuildUri);
 		System.out.println("rebuilding...");
 	}
