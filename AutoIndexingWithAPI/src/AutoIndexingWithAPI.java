@@ -23,7 +23,8 @@ import org.xml.sax.SAXException;
 public class AutoIndexingWithAPI {
 	static String AdminUri = "http://10.10.80.134:8390/api/v20/admin";
 	static String collection = "test_yhj";
-
+	//대기시간 넣기(indexer 킨다음. 그리고 리빌드된다음)
+	
 	public static void main(String[] args) throws ClientProtocolException, IOException, XPathExpressionException,
 			SAXException, ParserConfigurationException {
 		// Get Security Token
@@ -44,7 +45,7 @@ public class AutoIndexingWithAPI {
 				System.out.println(collection + "의 indexer가 시작되었습니다.");
 		}
 
-		// Re-build
+		// Re-build //시간넣기.
 		String rebuildUri = AdminUri + "/collections/indexer/subTasks/start?collection=" + collection
 				+ "&securityToken=" + securityToken + "&type=RebuildFromCache&mode=Full";
 		startRebuild(rebuildUri);
