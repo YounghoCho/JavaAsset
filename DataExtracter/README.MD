@@ -1,8 +1,15 @@
 <b>Data Exstracter<br>
-This program extract data on preview screen on WEX minor.
+This program extract Facet data on preview screen on WEX minor.
+The data contains Analytics Facets, Metadata Facets.
 
-#Preview Screen
- ![preview](./image/preview.png)
+# Get into Preview Screen
+ ![beforeclick](./image/beforeclick.png)
  
-#Result  
+# Analytics Facets
+ ![firstClick](./image/firstClick.png)
+ 
+# Metadata Facets
+ ![secondClick](./image/secondClick.png)
+ 
+# Result  
  ![facet](./image/facet.png)
